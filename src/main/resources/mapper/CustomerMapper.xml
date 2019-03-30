@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzd.dao.CustomerMapper">
+    <resultMap id="BaseResultMap" type="com.jzd.pojo.Customer">
+        <result column="cust_id" jdbcType="INTEGER" property="custId"/>
+        <result column="cust_name" jdbcType="VARCHAR" property="custName"/>
+        <result column="dict_id" jdbcType="VARCHAR" property="dictId"/>
+        <result column="dict_type_code" jdbcType="VARCHAR" property="dictTypeCode"/>
+        <result column="dict_type_name" jdbcType="VARCHAR" property="dictTypeName"/>
+        <result column="dict_item_name" jdbcType="VARCHAR" property="dictItemName"/>
+        <result column="dict_item_code" jdbcType="VARCHAR" property="dictItemCode"/>
+
+
+        <result column="cust_source" jdbcType="VARCHAR" property="custSource"/>
+        <result column="cust_industry" jdbcType="VARCHAR" property="custIndustry"/>
+        <result column="cust_level" jdbcType="VARCHAR" property="custLevel"/>
+
+
+
+        <result column="cust_phone" jdbcType="VARCHAR" property="custPhone"/>
+        <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile"/>
+
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+    cust_id, cust_name, cust_source, cust_industry, cust_level,
+     cust_phone, cust_mobile
+  </sql>
+    <sql id="selectCustomerListWhere">
+        <where>
+            <if test="custName != null">
+                cust_name like "%"#{custName}"%"
+            </if>
+            <if test="custSource != null">
+                and cust_source = #{custSource}
+            </if>
+            <if test="custIndustry != null">
+                and cust_industry = #{custIndustry}
+            </if>
+            <if test="custLevel != null">
+                and cust_level = #{custLevel}
+            </if>
+        </where>
+    </sql>
+    <select id="selectCustomerList" parameterType="customer"
+            resultType="customer">
+        SELECT
+        cust_id,
+        cust_name,
+        cust_user_id,
+        cust_create_id,
+        b.dict_item_name cust_source,
+        c.dict_item_name cust_industry,
+        d.dict_item_name cust_level,
+        cust_linkman,
+        cust_phone,
+        cust_mobile,
+        cust_createtime
+        FROM
+        customer a
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
+        WHERE
+        dict_type_code = '002'
+        ) b ON a.cust_source = b.dict_id
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
+        WHERE
+        dict_type_code = '001'
+        ) c ON a.cust_industry = c.dict_id
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
+        WHERE
+        dict_type_code = '006'
+        ) d ON a.cust_level = d.dict_id
+        <include refid="selectCustomerListWhere"/>
+
+
+    </select>
+
+    <select id="selectByExample" parameterType="com.jzd.pojo.CustomerExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from customer
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <delete id="deleteByExample" parameterType="com.jzd.pojo.CustomerExample">
+        delete from customer
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.jzd.pojo.Customer">
+    insert into customer (cust_id, cust_name,
+       cust_source, cust_industry,
+      cust_level, cust_phone,
+      cust_mobile)
+    values (#{custId,jdbcType=INTEGER}, #{custName,jdbcType=VARCHAR},
+       #{custSource,jdbcType=VARCHAR}, #{custIndustry,jdbcType=VARCHAR},
+      #{custLevel,jdbcType=VARCHAR},  #{custPhone,jdbcType=VARCHAR},
+      #{custMobile,jdbcType=VARCHAR},
+  </insert>
+    <insert id="insertSelective" parameterType="com.jzd.pojo.Customer">
+        insert into customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="custId != null">
+                cust_id,
+            </if>
+            <if test="custName != null">
+                cust_name,
+            </if>
+            <if test="custSource != null">
+                cust_source,
+            </if>
+            <if test="custIndustry != null">
+                cust_industry,
+            </if>
+            <if test="custLevel != null">
+                cust_level,
+            </if>
+
+            <if test="custPhone != null">
+                cust_phone,
+            </if>
+            <if test="custMobile != null">
+                cust_mobile,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="custId != null">
+                #{custId,jdbcType=INTEGER},
+            </if>
+            <if test="custName != null">
+                #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="custSource != null">
+                #{custSource,jdbcType=VARCHAR},
+            </if>
+            <if test="custIndustry != null">
+                #{custIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="custLevel != null">
+                #{custLevel,jdbcType=VARCHAR},
+            </if>
+
+            <if test="custPhone != null">
+                #{custPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="custMobile != null">
+                #{custMobile,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.jzd.pojo.CustomerExample" resultType="java.lang.Long">
+        select count(*) from customer
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update customer
+        <set>
+            <if test="record.custId != null">
+                cust_id = #{record.custId,jdbcType=INTEGER},
+            </if>
+            <if test="record.custName != null">
+                cust_name = #{record.custName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="record.custSource != null">
+                cust_source = #{record.custSource,jdbcType=VARCHAR},
+            </if>
+            <if test="record.custIndustry != null">
+                cust_industry = #{record.custIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="record.custLevel != null">
+                cust_level = #{record.custLevel,jdbcType=VARCHAR},
+            </if>
+
+            <if test="record.custPhone != null">
+                cust_phone = #{record.custPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="record.custMobile != null">
+                cust_mobile = #{record.custMobile,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update customer
+        set cust_id = #{record.custId,jdbcType=INTEGER},
+        cust_name = #{record.custName,jdbcType=VARCHAR},
+        cust_source = #{record.custSource,jdbcType=VARCHAR},
+        cust_industry = #{record.custIndustry,jdbcType=VARCHAR},
+        cust_level = #{record.custLevel,jdbcType=VARCHAR},
+
+        cust_phone = #{record.custPhone,jdbcType=VARCHAR},
+        cust_mobile = #{record.custMobile,jdbcType=VARCHAR},
+
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.jzd.pojo.Customer">
+        update customer
+        <set>
+            <if test="custName != null">
+                cust_name = #{custName,jdbcType=VARCHAR},
+            </if>
+            <if test="custSource != null">
+                cust_source = #{custSource,jdbcType=CHAR},
+            </if>
+            <if test="custIndustry != null">
+                cust_industry = #{custIndustry,jdbcType=VARCHAR},
+            </if>
+            <if test="custLevel != null">
+                cust_level = #{custLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="custPhone != null">
+                cust_phone = #{custPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="custMobile != null">
+                cust_mobile = #{custMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="dictId != null">
+                dict_id = #{dictId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where cust_id = #{custId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.jzd.pojo.Customer">
+    update customer
+    set cust_name = #{custName,jdbcType=VARCHAR},
+      cust_source = #{custSource,jdbcType=CHAR},
+      cust_industry = #{custIndustry,jdbcType=VARCHAR},
+      cust_level = #{custLevel,jdbcType=INTEGER}
+      cust_phone = #{custPhone,jdbcType=VARCHAR},
+      cust_mobile = #{custMobile,jdbcType=CHAR},
+      dict_id = #{dictId,jdbcType=VARCHAR},
+
+    where cust_id = #{custId,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from customer
+        where cust_id = #{custId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from customer
+    where cust_id = #{custId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

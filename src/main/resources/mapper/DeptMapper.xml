@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jzd.dao.DeptMapper">
+  <resultMap id="BaseResultMap" type="com.jzd.pojo.Dept">
+    <result column="dict_id" jdbcType="VARCHAR" property="dictId" />
+    <result column="dict_type_code" jdbcType="VARCHAR" property="dictTypeCode" />
+    <result column="dict_type_name" jdbcType="VARCHAR" property="dictTypeName" />
+    <result column="dict_item_name" jdbcType="VARCHAR" property="dictItemName" />
+    <result column="dict_item_code" jdbcType="VARCHAR" property="dictItemCode" />
+    <result column="dict_sort" jdbcType="INTEGER" property="dictSort" />
+    <result column="dict_enable" jdbcType="CHAR" property="dictEnable" />
+    <result column="dict_memo" jdbcType="VARCHAR" property="dictMemo" />
+    <result column="cust_source" jdbcType="VARCHAR" property="custSource" />
+    <result column="cust_industry" jdbcType="VARCHAR" property="custIndustry" />
+    <result column="cust_level" jdbcType="VARCHAR" property="custLevel" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    dict_id, dict_type_code, dict_type_name, dict_item_name, dict_item_code, dict_sort, 
+    dict_enable, dict_memo
+  </sql>
+  <select id="selectByExample" parameterType="com.jzd.pojo.DeptExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from base_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jzd.pojo.DeptExample">
+    delete from base_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jzd.pojo.Dept">
+    insert into base_dict (dict_id, dict_type_code, dict_type_name, 
+      dict_item_name, dict_item_code, dict_sort, 
+      dict_enable, dict_memo)
+    values (#{dictId,jdbcType=VARCHAR}, #{dictTypeCode,jdbcType=VARCHAR}, #{dictTypeName,jdbcType=VARCHAR}, 
+      #{dictItemName,jdbcType=VARCHAR}, #{dictItemCode,jdbcType=VARCHAR}, #{dictSort,jdbcType=INTEGER}, 
+      #{dictEnable,jdbcType=CHAR}, #{dictMemo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jzd.pojo.Dept">
+    insert into base_dict
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        dict_id,
+      </if>
+      <if test="dictTypeCode != null">
+        dict_type_code,
+      </if>
+      <if test="dictTypeName != null">
+        dict_type_name,
+      </if>
+      <if test="dictItemName != null">
+        dict_item_name,
+      </if>
+      <if test="dictItemCode != null">
+        dict_item_code,
+      </if>
+      <if test="dictSort != null">
+        dict_sort,
+      </if>
+      <if test="dictEnable != null">
+        dict_enable,
+      </if>
+      <if test="dictMemo != null">
+        dict_memo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        #{dictId,jdbcType=VARCHAR},
+      </if>
+      <if test="dictTypeCode != null">
+        #{dictTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictTypeName != null">
+        #{dictTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictItemName != null">
+        #{dictItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictItemCode != null">
+        #{dictItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dictSort != null">
+        #{dictSort,jdbcType=INTEGER},
+      </if>
+      <if test="dictEnable != null">
+        #{dictEnable,jdbcType=CHAR},
+      </if>
+      <if test="dictMemo != null">
+        #{dictMemo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jzd.pojo.DeptExample" resultType="java.lang.Long">
+    select count(*) from base_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update base_dict
+    <set>
+      <if test="record.dictId != null">
+        dict_id = #{record.dictId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictTypeCode != null">
+        dict_type_code = #{record.dictTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictTypeName != null">
+        dict_type_name = #{record.dictTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictItemName != null">
+        dict_item_name = #{record.dictItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictItemCode != null">
+        dict_item_code = #{record.dictItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictSort != null">
+        dict_sort = #{record.dictSort,jdbcType=INTEGER},
+      </if>
+      <if test="record.dictEnable != null">
+        dict_enable = #{record.dictEnable,jdbcType=CHAR},
+      </if>
+      <if test="record.dictMemo != null">
+        dict_memo = #{record.dictMemo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update base_dict
+    set dict_id = #{record.dictId,jdbcType=VARCHAR},
+      dict_type_code = #{record.dictTypeCode,jdbcType=VARCHAR},
+      dict_type_name = #{record.dictTypeName,jdbcType=VARCHAR},
+      dict_item_name = #{record.dictItemName,jdbcType=VARCHAR},
+      dict_item_code = #{record.dictItemCode,jdbcType=VARCHAR},
+      dict_sort = #{record.dictSort,jdbcType=INTEGER},
+      dict_enable = #{record.dictEnable,jdbcType=CHAR},
+      dict_memo = #{record.dictMemo,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
